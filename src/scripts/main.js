@@ -2,28 +2,25 @@
 
 const logo = document.querySelector('.logo');
 
-logo.addEventListener('click', () => {
-  handleClick();
-});
-
-const handleClick = () => {
+function handleClick() {
   const promise1 = new Promise((resolve) => {
     resolve('Promise was resolved!');
   });
 
   promise1.then(handleSuccess).catch(handleError);
-};
+}
 
-const createRejectingPromise = (message) => {
+function createRejectingPromise(message) {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
       reject(new Error(message));
     }, 3000);
   });
-};
+}
+
+logo.addEventListener('click', handleClick);
 
 const promise2 = createRejectingPromise('Promise was rejected!');
-
 const messageDiv = document.createElement('div');
 
 document.body.appendChild(messageDiv);
