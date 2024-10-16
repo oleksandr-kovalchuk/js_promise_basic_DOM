@@ -1,6 +1,19 @@
 'use strict';
 
 const logo = document.querySelector('.logo');
+const messageDiv = document.createElement('div');
+
+document.body.appendChild(messageDiv);
+
+function handleSuccess(message) {
+  messageDiv.className = 'message';
+  messageDiv.textContent = message;
+}
+
+function handleError(errorMessage) {
+  messageDiv.className = 'message error-message';
+  messageDiv.textContent = errorMessage;
+}
 
 function handleClick() {
   const promise1 = new Promise((resolve) => {
@@ -10,29 +23,12 @@ function handleClick() {
   promise1.then(handleSuccess).catch(handleError);
 }
 
-function createRejectingPromise(message) {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      reject(new Error(message));
-    }, 3000);
-  });
-}
-
 logo.addEventListener('click', handleClick);
 
-const promise2 = createRejectingPromise('Promise was rejected!');
-const messageDiv = document.createElement('div');
+const promise2 = new Promise((resolve, reject) => {
+  setTimeout(() => {
+    reject(new Error('Promise was rejected!'));
+  }, 3000);
+});
 
-document.body.appendChild(messageDiv);
-
-const handleSuccess = (message) => {
-  messageDiv.className = 'message';
-  messageDiv.textContent = message;
-};
-
-const handleError = (errorMessage) => {
-  messageDiv.className = 'message error-message';
-  messageDiv.textContent = errorMessage;
-};
-
-promise2.then(handleSuccess).catch((error) => handleError(error.message));
+promise2.then(handleSuccess).catch(handleError);
