@@ -2,33 +2,40 @@
 
 const logo = document.querySelector('.logo');
 
-const promise1 = new Promise((resolve, reject) => {
-  logo.addEventListener('click', () => {
+logo.addEventListener('click', () => {
+  handleClick();
+});
+
+const handleClick = () => {
+  const promise1 = new Promise((resolve) => {
     resolve('Promise was resolved!');
   });
-});
 
-const promise2 = new Promise((resolve, reject) => {
-  setTimeout(() => {
-    reject(new Error('Promise was rejected!'));
-  }, 3000);
-});
+  promise1.then(handleSuccess).catch(handleError);
+};
+
+const createRejectingPromise = (message) => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      reject(new Error(message));
+    }, 3000);
+  });
+};
+
+const promise2 = createRejectingPromise('Promise was rejected!');
+
+const messageDiv = document.createElement('div');
+
+document.body.appendChild(messageDiv);
 
 const handleSuccess = (message) => {
-  const successDiv = document.createElement('div');
-
-  successDiv.classList.add('message');
-  successDiv.textContent = message;
-  document.body.appendChild(successDiv);
+  messageDiv.className = 'message';
+  messageDiv.textContent = message;
 };
 
 const handleError = (errorMessage) => {
-  const errorDiv = document.createElement('div');
-
-  errorDiv.classList.add('message', 'error-message');
-  errorDiv.textContent = errorMessage;
-  document.body.appendChild(errorDiv);
+  messageDiv.className = 'message error-message';
+  messageDiv.textContent = errorMessage;
 };
 
-promise1.then(handleSuccess).catch(handleError);
-promise2.then(handleSuccess).catch(handleError);
+promise2.then(handleSuccess).catch((error) => handleError(error.message));
