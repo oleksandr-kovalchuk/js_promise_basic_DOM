@@ -1,30 +1,36 @@
 'use strict';
 
-const logo = document.querySelector('.logo');
+const logoElement = document.querySelector('.logo');
 
-const promise1 = new Promise((resolve) => {
-  logo.addEventListener('click', () => resolve('Promise was resolved!'));
+const showMessage = (text, isError = false) => {
+  const messageDiv = document.createElement('div');
+
+  messageDiv.classList.add('message');
+
+  if (isError) {
+    messageDiv.classList.add('error-message');
+  }
+
+  messageDiv.textContent = text;
+  document.body.appendChild(messageDiv);
+};
+
+const clickPromise = new Promise((resolve) => {
+  logoElement.addEventListener(
+    'click',
+    () => resolve('Promise was resolved!'),
+    { once: true },
+  );
 });
 
-const promise2 = new Promise((resolve, reject) => {
+const timeoutPromise = new Promise((resolve, reject) => {
   setTimeout(() => reject(new Error('Promise was rejected!')), 3000);
 });
 
-const createMessageDiv = (message, isError = false) => {
-  const div = document.createElement('div');
+clickPromise
+  .then(showMessage)
+  .catch((error) => showMessage(error.message, true));
 
-  div.classList.add('message');
-
-  if (isError) {
-    div.classList.add('error-message');
-  }
-
-  div.textContent = message;
-  document.body.appendChild(div);
-};
-
-const handleSuccess = (message) => createMessageDiv(message);
-const handleError = (error) => createMessageDiv(error.message, true);
-
-promise1.then(handleSuccess).catch(handleError);
-promise2.then(handleSuccess).catch(handleError);
+timeoutPromise
+  .then(showMessage)
+  .catch((error) => showMessage(error.message, true));
